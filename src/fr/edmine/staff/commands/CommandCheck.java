@@ -89,7 +89,6 @@ public class CommandCheck implements CommandExecutor
 				this.session.getSession(player).setTarget(target);
 
 				new PlayerInventory(this.instance).openInventory(player);
-				this.message.send(Channel.CONSOLE, "§7Lecture du fichier §6'dat' §7de: §3" + target.getName());
 				return true;
 			}
 		}
