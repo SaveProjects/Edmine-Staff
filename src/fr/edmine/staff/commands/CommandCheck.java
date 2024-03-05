@@ -1,15 +1,5 @@
 package fr.edmine.staff.commands;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.text.DecimalFormat;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
-
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -21,8 +11,6 @@ import fr.edmine.staff.channel.Message;
 import fr.edmine.staff.channel.Message.Channel;
 import fr.edmine.staff.inventorys.PlayerInventory;
 import fr.edmine.staff.managers.Sessions;
-import net.minecraft.server.v1_8_R3.NBTCompressedStreamTools;
-import net.minecraft.server.v1_8_R3.NBTTagCompound;
 
 public class CommandCheck implements CommandExecutor
 {
@@ -37,7 +25,6 @@ public class CommandCheck implements CommandExecutor
 		this.session = main.getSessions();
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args)
 	{
