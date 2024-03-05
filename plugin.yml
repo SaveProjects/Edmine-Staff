@@ -1,0 +1,16 @@
+version: 0.1
+name: Staff
+main: fr.edmine.staff.Staff
+api-version: 1.15
+author: [Blackbalrog]
+description: plugin staff
+
+commands:
+  check:
+    description: commande qui check le joueur
+
+permissions:
+  staff.check:
+    description: permission permettant de verifier un joueur
+  staff.nocheck:
+    description: permission permettant de ne pas se faire verifier par un staff
