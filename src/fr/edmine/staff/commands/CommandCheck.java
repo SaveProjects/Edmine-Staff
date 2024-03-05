@@ -76,7 +76,7 @@ public class CommandCheck implements CommandExecutor
 					return false;
 				}
 				
-				//Désactiver pour le moment
+				//Désactivation provisoir
 				/*
 				if (target.hasPermission("staff.nocheck"))
 				{
@@ -89,62 +89,7 @@ public class CommandCheck implements CommandExecutor
 				this.session.getSession(player).setTarget(target);
 
 				new PlayerInventory(this.instance).openInventory(player);
-				this.message.send(Channel.PLAYER, "§7Ouverture du menu");
-
-				//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-				//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-				//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-				
-				
 				this.message.send(Channel.CONSOLE, "§7Lecture du fichier §6'dat' §7de: §3" + target.getName());
-				File playerDataFolder = new File(target.getWorld().getName() + "/playerdata/");
-				File playerDat = new File(playerDataFolder, player.getUniqueId().toString() + ".dat");
-				if (!playerDataFolder.exists() || !playerDat.exists())
-				{
-					this.message.send(Channel.PLAYER, "§cUn problème est survenu lors de la récupération des informations du joueur");
-					return false;
-				}
-				
-				try
-				{
-					FileInputStream inputStream = new FileInputStream(playerDat);
-					NBTTagCompound nbt = NBTCompressedStreamTools.a(inputStream);
-					/*
-					for (String line : nbt.c())
-					{
-						this.message.send(Channel.CONSOLE, "§7" + line);
-					}
-					*/
-					this.message.send(Channel.PLAYER, "§7§m---------------------");
-					
-					Path filePath = playerDat.toPath();
-					BasicFileAttributes attributes = null;
-					try
-			        {
-			            attributes = Files.readAttributes(filePath, BasicFileAttributes.class);
-			        }
-			        catch (IOException exception)
-			        {
-			        	
-			        }
-					Date creationDate = new Date(attributes.creationTime().to(TimeUnit.MILLISECONDS));
-					this.message.send(Channel.PLAYER, "§bArriver le: §7" + creationDate.getDay() + "/" + (creationDate.getMonth() +1) + "/" + (creationDate.getYear() + 1900));
-					
-					this.message.send(Channel.PLAYER, "§bMonde: §7" + target.getWorld().getName());
-					
-					DecimalFormat decimalFormat = new DecimalFormat("#####.##");
-					String x = decimalFormat.format(target.getLocation().getX());
-					String y = decimalFormat.format(target.getLocation().getY());
-					String z = decimalFormat.format(target.getLocation().getZ());
-					this.message.send(Channel.PLAYER, "§bPosition: " + "§7x:" + x + " y:" + y + " z:" + z);
-					
-					this.message.send(Channel.PLAYER, "§7§m---------------------");
-				}
-				catch (Exception exeption)
-				{
-					exeption.printStackTrace();
-				}
-				
 				return true;
 			}
 		}

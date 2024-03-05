@@ -1,5 +1,14 @@
 package fr.edmine.staff.inventorys;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.text.DecimalFormat;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -29,12 +38,49 @@ public class PlayerInventory implements Listener
 		this.instance = main;
 	}
 
+	@SuppressWarnings("deprecation")
 	public void openInventory(Player player)
 	{
 		Sessions playerSession = this.session.getSession(player);
-
 		Inventory inventory = Bukkit.createInventory(null, 54, playerSession.getTarget().getName());
-
+		
+		this.message = new Message(player);
+		
+		File playerData = new File(playerSession.getTarget().getWorld().getName() + "/playerdata/" + playerSession.getTarget().getUniqueId().toString() + ".dat");
+		if (!playerData.exists())
+		{
+			this.message.send(Channel.PLAYER, "§cUn problème est survenu lors de la récupération des informations du joueur");
+		}
+		Path filePath = playerData.toPath();
+		BasicFileAttributes attributes = null;
+		try
+        {
+            attributes = Files.readAttributes(filePath, BasicFileAttributes.class);
+        }
+        catch (IOException exception)
+        {
+        	
+        }
+		Date creationDate = new Date(attributes.creationTime().to(TimeUnit.MILLISECONDS));
+		
+		DecimalFormat decimalFormat = new DecimalFormat("#####.##");
+		String x = decimalFormat.format(playerSession.getTarget().getLocation().getX());
+		String y = decimalFormat.format(playerSession.getTarget().getLocation().getY());
+		String z = decimalFormat.format(playerSession.getTarget().getLocation().getZ());
+		
+		this.item = new ItemBuilder(Material.BEDROCK);
+		this.item.setDisplayName("§6Informations")
+		.setLore(new String[] {
+				"", 
+				"§7§nInformation du joueur",
+				"",
+				"§b1er connexion: §7" + creationDate.getDay() + "/" + (creationDate.getMonth() +1) + "/" + (creationDate.getYear() + 1900), 
+				"§bMonde: §7" + playerSession.getTarget().getWorld().getName(), 
+				"§bPosition: " + "§7x:" + x + " y:" + y + " z:" + z, 
+				""
+		}).build();
+		inventory.setItem(21, this.item.getItemStack());
+		
 		this.item = new ItemBuilder(Material.REDSTONE_TORCH_ON);
 		this.item.setDisplayName("§aAction")
 		.setLore(new String[] {
@@ -52,6 +98,7 @@ public class PlayerInventory implements Listener
 		this.item.setDisplayName("§fAvertir")
 		.setLore(new String[] {"", 
 				"§7§nDescription:", 
+				"", 
 				"§7Avertit le joueur",
 				""
 		}).build();
@@ -61,6 +108,7 @@ public class PlayerInventory implements Listener
 		this.item.setDisplayName("§4Catégories")
 		.setLore(new String[] {"", 
 				"§7§nDescription:", 
+				"", 
 				"§7Cette catégorie contient 3 catégories", 
 				"§eMute", "§6Ban", "§4Ban-ip",
 				"§7Sélectionner s'en une adapter à la situation",
@@ -76,13 +124,13 @@ public class PlayerInventory implements Listener
 	{
 		Player player = (Player) event.getWhoClicked();
 		this.message = new Message(player);
-		ItemStack itemClicked = event.getCurrentItem();
-
 		this.message.send(Channel.PLAYER, "§7Slot: §b" + event.getSlot());
 		
 		Sessions playerSession = this.session.getSession(player);
 		if (event.getView().getTitle().equals(playerSession.getTarget().getName()))
 		{
+			ItemStack itemClicked = event.getCurrentItem();
+			
 			if (itemClicked == null || event.getClickedInventory() == null) return;
 			event.setCancelled(true);
 
