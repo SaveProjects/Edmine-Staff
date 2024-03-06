@@ -1,7 +1,5 @@
 package fr.edmine.staff.inventorys;
 
-import java.util.Arrays;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -11,13 +9,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import fr.edmine.staff.Staff;
 import fr.edmine.staff.actions.TeleportPlayer;
 import fr.edmine.staff.channel.Message;
 import fr.edmine.staff.channel.Message.Channel;
 import fr.edmine.staff.item.ItemBuilder;
+import fr.edmine.staff.item.ToggleItem;
 import fr.edmine.staff.managers.Sessions;
 
 public class InventoryAction implements Listener
@@ -87,23 +85,22 @@ public class InventoryAction implements Listener
 			{
 					//freeze
 				case 20:
-					ItemMeta itemMeta = itemClicked.getItemMeta();
+					ItemStack itemslot20 = event.getView().getItem(20);
+					ToggleItem toggleItem = new ToggleItem(itemslot20);
+					toggleItem.toggle(Material.PACKED_ICE, Material.ICE);
+					
 					if (!this.instance.getActions().getFreezeList().contains(playerSession.getTarget()))
 					{
 						this.instance.getActions().getFreezeList().add(playerSession.getTarget());
-						itemMeta.setLore(Arrays.asList(new String[] {"", "§8Mode: §aActiver", ""}));
-						itemMeta.addEnchant(Enchantment.DURABILITY, 0, false);
+						toggleItem.setEtat(true);
 						this.message.send(Channel.PLAYER, "§7Vous avez été freeze par §3" + player.getName());
 					}
 					else if (this.instance.getActions().getFreezeList().contains(playerSession.getTarget()))
 					{
 						this.instance.getActions().getFreezeList().remove(playerSession.getTarget());
-						itemMeta.setLore(Arrays.asList(new String[] {"", "§8Mode: §cDésactiver", ""}));
-						itemMeta.removeEnchant(Enchantment.DURABILITY);
+						toggleItem.setEtat(false);
 						this.message.send(Channel.PLAYER, "§7Vous avez été défreeze par §3" + player.getName());
 					}
-					itemClicked.setItemMeta(itemMeta);
-					event.getView().setItem(20, itemClicked);
 					break;
 					
 					//Teleportation
