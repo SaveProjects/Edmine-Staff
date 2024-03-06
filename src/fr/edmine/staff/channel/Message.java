@@ -18,13 +18,25 @@ public class Message
 		switch (channelType)
 		{
 			case CONSOLE:
-				Bukkit.getServer().getConsoleSender().sendMessage(prefix + message);
+				Bukkit.getServer().getConsoleSender().sendMessage(this.prefix + message);
 				break;
+				
 			case BROADCAST:
-				Bukkit.broadcastMessage(prefix + message);
+				for (Player player : Bukkit.getOnlinePlayers())
+				{
+					player.sendMessage(this.prefix + message);
+				}
 				break;
+				
 			case PLAYER:
-				player.sendMessage(prefix + message);
+				player.sendMessage(this.prefix + message);
+				break;
+				
+			case STAFF:
+				if (this.player.hasPermission("staff.channel"))
+				{
+					this.player.sendMessage(this.prefix + message);
+				}
 				break;
 		}
 	}
@@ -33,6 +45,7 @@ public class Message
 	{
 		CONSOLE,
 		BROADCAST,
-		PLAYER
+		PLAYER,
+		STAFF
 	}
 }

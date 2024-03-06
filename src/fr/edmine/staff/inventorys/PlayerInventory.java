@@ -22,6 +22,7 @@ import fr.edmine.staff.Staff;
 import fr.edmine.staff.channel.Message;
 import fr.edmine.staff.channel.Message.Channel;
 import fr.edmine.staff.item.ItemBuilder;
+import fr.edmine.staff.managers.Sanction;
 import fr.edmine.staff.managers.Sessions;
 
 public class PlayerInventory implements Listener
@@ -133,7 +134,7 @@ public class PlayerInventory implements Listener
 			
 			if (itemClicked == null || event.getClickedInventory() == null) return;
 			event.setCancelled(true);
-
+			
 			switch (event.getSlot())
 			{
 					//Action
@@ -143,19 +144,26 @@ public class PlayerInventory implements Listener
 				
 					//Sanction
 				case 25:
+					
 					break;
+					
 					//Warn
 				case 41:
 					playerSession.setInstance(this.instance);
-					if (playerSession.getWarn() == 3)
+					Sanction sanction = playerSession.getSanction();
+					if (sanction.getWarn() == 3)
 					{
 						Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mute " + playerSession.getTarget().getName());
 						this.message.send(Channel.BROADCAST, "§3" + playerSession.getTarget().getName() + " §7a été mute après §33 §7avertissements");
 						this.message = new Message(playerSession.getTarget());
 						this.message.send(Channel.PLAYER, "§7Vous avez été mute après §33 §7avertissements");
+						
+						//Reset
+						sanction.getConfigurationData().set("warns", 0);
+						sanction.saveFileData();
 						return;
 					}
-					playerSession.addWarn();
+					sanction.addWarn();
 					this.message.send(Channel.PLAYER, "§7Vous avez avertit §3" + playerSession.getTarget().getName());
 					this.message = new Message(playerSession.getTarget());
 					this.message.send(Channel.PLAYER, "§3" + player.getName() + " §7Vous a avertit");
